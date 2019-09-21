@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Foreword &#8212; Secout Documentation</title>
+    <link rel="stylesheet" href="_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/secout_icon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Install Secout" href="install.html" />
+    <link rel="prev" title="NEST Secure Outsourcing" href="index.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="install.html" title="Install Secout"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="NEST Secure Outsourcing"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Secout Documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="foreword">
+<h1>Foreword<a class="headerlink" href="#foreword" title="Permalink to this headline">¶</a></h1>
+<p>In a secure outsourcing system, the clients would like to perform operations
+that are computationally complex while their local machines do not have enough
+resources to solve the problem. With the emerging cloud technology, the clients
+could easily obtain computational resources they needed from cloud hosts.
+Currently, the major cloud hosts include Google Cloud Platform (GCP), Amazon Web
+Services (AWS), and Microsoft Azure. However, the problem might contain sensitive
+information that the clients would not want to disclose and computed outside of a
+controlled environment. This imposes a challenge: how to securely outsource
+computationally intensive computations to cloud servers without expose sensitive
+information.</p>
+<p>Currently, there are existing algorithms that resolve the problem to limited
+scopes. Some of them relies on specific mathematical properties of the input
+problem, while some others requires a large amount of computational resources on
+local. Most importantly, almost all existing method imposes a lot of memory I/O
+operations on local machine. The resource limitations on local machines has been
+barely addressed, as in most of the cases, local machines lacks enough random
+access memory (RAM) to load the problem. Our algorithm fixed the problem by
+only perform necessary secure transformation locally to keep the task simple for
+the client machine while outsource computationally complex operations to the
+cloud.</p>
+<p>In this project, we implemented the algorithms using the proposed schemes. That
+is, the cloud cooperates with the local machine to compute the result without
+compromising the privacy and security. To perform the outsourcing, we used Dask,
+a distributed parallel computing platform and library <a class="footnote-reference brackets" href="#id2" id="id1">1</a>. Users may setup
+their Dask server in a potentially unsafe environment and is able to solve their
+problems securely using our algorithms.</p>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><ol class="upperalpha simple" start="13">
+<li><p>Rocklin, “Dask: Parallel Computation with Blocked algorithms and Task Scheduling,” presented at the Python in Science Conference, Austin, Texas, 2015, pp. 126–132 [Online]. Available: <a class="reference external" href="https://conference.scipy.org/proceedings/scipy2015/matthew_rocklin.html">https://conference.scipy.org/proceedings/scipy2015/matthew_rocklin.html</a>. [Accessed: 14-Jul-2019]</p></li>
+</ol>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/secout_icon.png" alt="Logo"/>
+            </a></p>
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Foreword</a><ul>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="index.html">Overview</a>
+    <ul>
+          <li>Previous: <a href="index.html" title="previous chapter">NEST Secure Outsourcing</a>
+          <li>Next: <a href="install.html" title="next chapter">Install Secout</a>
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Yida Liu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  <script type="text/javascript" src="_static/version_warning_offset.js"></script>
+
+  </body>
+</html>

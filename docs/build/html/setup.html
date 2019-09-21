@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Setup &#8212; Secout Documentation</title>
+    <link rel="stylesheet" href="_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/secout_icon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Install Secout" href="install.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="api.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Install Secout"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Secout Documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="setup">
+<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
+<p>This page describes a few practical ways to setup the necessary computing resources needed
+for Secout on different hardware / platforms.</p>
+<p>By design, Secout utilizes the distributed platform provided by Dask. You could
+deploy Dask on your local machine or on a distributed cluster.</p>
+<div class="section" id="deploy-on-local-machine">
+<h2>Deploy on Local Machine<a class="headerlink" href="#deploy-on-local-machine" title="Permalink to this headline">¶</a></h2>
+<p>It is quite easy to use Dask on local machine.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dask.distributed</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span> <span class="c1"># start a new client that uses local client</span>
+</pre></div>
+</div>
+<p>The detailed documentation for Dask client could be found <a class="reference external" href="https://distributed.dask.org/en/latest/client.html">here</a></p>
+</div>
+<div class="section" id="deploy-on-distributed-cluster">
+<h2>Deploy on Distributed cluster<a class="headerlink" href="#deploy-on-distributed-cluster" title="Permalink to this headline">¶</a></h2>
+<p>Here we are showing a way of deploying a Dask cluster with 1 scheduler node, 3
+worker node, and 1 jupyter notebook node on Google Cloud Platform (GCP). We use the
+Active Cloud Shell provided in the GCP Console Workspace.</p>
+<ol class="arabic">
+<li><p>Start a Kubernetes Cluster from Kubernetes Engine. Tweak the options if you want.</p>
+<blockquote>
+<div><ul>
+<li><p>Use the graphical interface provided of GCP Kubenetes Engine</p></li>
+<li><dl>
+<dt>Use the <cite>gcloud</cite> command-line tool.</dt><dd><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>gcloud container clusters create MY_KUBERNETES_CLUSTER <span class="se">\</span>
+  --enable-cloud-logging <span class="se">\</span>
+  --enable-cloud-monitoring <span class="se">\</span>
+  --subnetwork default
+  --num-nodes <span class="m">5</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+<p>You must also obtain the credentials to the cluster you just created.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># obtain the cluster credentials so that you could operate with kubectl and helm</span>
+gcloud container clusters get-credentials MY_KUBERNETES_CLUSTER
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Setting up helm with your cluster.</p>
+<blockquote>
+<div><div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># add a service account within a namespace to segregate tiller</span>
+kubectl --namespace kube-system create sa tiller
+<span class="c1"># create a cluster role binding for tiller</span>
+kubectl create clusterrolebinding tiller <span class="se">\</span>
+    --clusterrole cluster-admin <span class="se">\</span>
+    --serviceaccount<span class="o">=</span>kube-system:tiller
+
+<span class="nb">echo</span> <span class="s2">&quot;initialize helm&quot;</span>
+<span class="c1"># initialized helm within the tiller service account</span>
+helm init --service-account tiller
+<span class="c1"># updates the repos for Helm repo integration</span>
+helm repo update
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Install <cite>dask</cite> using helm.</p>
+<blockquote>
+<div><p>You could install at default setting by</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>helm install stable/dask
+</pre></div>
+</div>
+<p>This will create a dask compute cluster that contains 1 scheduler, 3 worker, and 1 jupyter notebook.</p>
+</div></blockquote>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/secout_icon.png" alt="Logo"/>
+            </a></p>
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Setup</a><ul>
+<li><a class="reference internal" href="#deploy-on-local-machine">Deploy on Local Machine</a></li>
+<li><a class="reference internal" href="#deploy-on-distributed-cluster">Deploy on Distributed cluster</a></li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="index.html">Overview</a>
+    <ul>
+          <li>Previous: <a href="install.html" title="previous chapter">Install Secout</a>
+          <li>Next: <a href="api.html" title="next chapter">API</a>
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Yida Liu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  <script type="text/javascript" src="_static/version_warning_offset.js"></script>
+
+  </body>
+</html>

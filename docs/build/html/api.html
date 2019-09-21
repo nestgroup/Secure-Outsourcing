@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>API &#8212; Secout Documentation</title>
+    <link rel="stylesheet" href="_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="_static/secout_icon.png"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Setup" href="setup.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="setup.html" title="Setup"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Secout Documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="linear-system-of-equations">
+<h2>Linear System of Equations<a class="headerlink" href="#linear-system-of-equations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="local">
+<h3>Local<a class="headerlink" href="#local" title="Permalink to this headline">¶</a></h3>
+<p>This module contains pure <code class="docutils literal notranslate"><span class="pre">numpy</span></code> implementation of the secure LSE algorithm.</p>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#secout.LSE.local.secure_mask" title="secout.LSE.local.secure_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">secure_mask</span></code></a>(A[, Q, P, Z, l, p, q])</p></td>
+<td><p>Perform secure masking <cite>Q &#64; (A + Z) &#64; P</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#secout.LSE.local.slse_transformation" title="secout.LSE.local.slse_transformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slse_transformation</span></code></a>(A, b, l)</p></td>
+<td><p>Performs SLSE Transformation to the input problem.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#secout.LSE.local.ppcgm" title="secout.LSE.local.ppcgm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ppcgm</span></code></a>(Ap, bp, l[, tol])</p></td>
+<td><p>Performs Privacy Preserving Conjugate Gradient Method (PPCGM).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#secout.LSE.local.solve" title="secout.LSE.local.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>(A, b[, tol])</p></td>
+<td><p>Solve any linear system of equations using the proposed algorithm.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="secout.LSE.local.secure_mask">
+<code class="descclassname">secout.LSE.local.</code><code class="descname">secure_mask</code><span class="sig-paren">(</span><em>A</em>, <em>Q=None</em>, <em>P=None</em>, <em>Z=None</em>, <em>l=16</em>, <em>p=8</em>, <em>q=4</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.local.secure_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform secure masking <cite>Q &#64; (A + Z) &#64; P</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A</strong><span class="classifier">(M, N) array_like</span></dt><dd><p>The array to be masked</p>
+</dd>
+<dt><strong>Q</strong><span class="classifier">(M, M) array_like, optional</span></dt><dd><p>Row permutation matrix. If Q is not supplied, a random permutation
+matrix of corresponding shape is generated.</p>
+</dd>
+<dt><strong>P</strong><span class="classifier">(N, N) array_like, optional</span></dt><dd><p>Column permutation matrix. If P is not supplied, a random permutation
+matrix of corresponding shape is generated.</p>
+</dd>
+<dt><strong>Z</strong><span class="classifier">(M, N) array_like, optional</span></dt><dd><p>Additive noise matrix. If Z is not supplied, a random additive
+noise of <code class="docutils literal notranslate"><span class="pre">A.shape</span></code> is generated</p>
+</dd>
+<dt><strong>l</strong><span class="classifier">int, optional</span></dt><dd><p>Parameter for additive noise, assuming that the value of A is within
+(-2^l, 2^l) (the default is 16)</p>
+</dd>
+<dt><strong>p</strong><span class="classifier">int, optional</span></dt><dd><p>parameter for additive noise (the default is 8).</p>
+</dd>
+<dt><strong>q</strong><span class="classifier">int, optional</span></dt><dd><p>parameter for additive noise (the default is 4).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>(M, N) array_like</dt><dd><p>The result of the secure mask <code class="docutils literal notranslate"><span class="pre">Q</span> <span class="pre">&#64;</span> <span class="pre">(A</span> <span class="pre">+</span> <span class="pre">Z)</span> <span class="pre">&#64;</span> <span class="pre">P</span></code></p>
+</dd>
+<dt><strong>Z</strong><span class="classifier">(M, N) array_like</span></dt><dd><p>Additive noise</p>
+</dd>
+<dt><strong>Q</strong><span class="classifier">(M, M) array_like</span></dt><dd><p>Row permutation matrix</p>
+</dd>
+<dt><strong>P</strong><span class="classifier">(N, N) array_like</span></dt><dd><p>Column permutation matrix</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="secout.LSE.local.slse_transformation">
+<code class="descclassname">secout.LSE.local.</code><code class="descname">slse_transformation</code><span class="sig-paren">(</span><em>A</em>, <em>b</em>, <em>l</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.local.slse_transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs SLSE Transformation to the input problem.</p>
+<p>Computes <span class="math notranslate nohighlight">\(A.T A\)</span> and <span class="math notranslate nohighlight">\(A.T b\)</span> using the proposed secure LSE
+transformation using local computational resources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A</strong><span class="classifier">(M, N) matrix_like</span></dt><dd><p>Coefficient matrix to the linear system of equations</p>
+</dd>
+<dt><strong>b</strong><span class="classifier">(M,) matrix_like</span></dt><dd><p>Constant matrix to the linear system of equations</p>
+</dd>
+<dt><strong>l</strong><span class="classifier">int</span></dt><dd><p>Constraint for A: The values in A must be within <span class="math notranslate nohighlight">\((-2^l, 2^l)\)</span></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>Ap</strong><span class="classifier">(N, N) ndarray</span></dt><dd><p>The transformed coefficient matrix. <span class="math notranslate nohighlight">\(A.T A\)</span></p>
+</dd>
+<dt><strong>bp</strong><span class="classifier">(N,) ndarray</span></dt><dd><p>The transformed constant matrix. <span class="math notranslate nohighlight">\(A.T b\)</span></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="secout.LSE.local.ppcgm">
+<code class="descclassname">secout.LSE.local.</code><code class="descname">ppcgm</code><span class="sig-paren">(</span><em>Ap</em>, <em>bp</em>, <em>l</em>, <em>tol=1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.local.ppcgm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs Privacy Preserving Conjugate Gradient Method (PPCGM).</p>
+<p>Computes the result of the input linear system using the proposed PPCGM with
+local computational resources. The input linear system must be nonsingular,
+symmetric and positive definite.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Ap</strong><span class="classifier">(N, N) array_like</span></dt><dd><p>Coefficient matrix that is nonsingular, symmetric and positive definite.</p>
+</dd>
+<dt><strong>bp</strong><span class="classifier">(N,) array_like</span></dt><dd><p>Constant matrix</p>
+</dd>
+<dt><strong>l</strong><span class="classifier">int</span></dt><dd><p>Constraint for A: The values in A must be within <span class="math notranslate nohighlight">\((-2^l, 2^l)\)</span></p>
+</dd>
+<dt><strong>tol</strong><span class="classifier">float, optional</span></dt><dd><p>The stopping threshold for PPCGM (default is <cite>1e-5</cite>)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">(N,) array_like</span></dt><dd><p>The solution to the linear system computed by PPCGM</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="secout.LSE.local.solve">
+<code class="descclassname">secout.LSE.local.</code><code class="descname">solve</code><span class="sig-paren">(</span><em>A</em>, <em>b</em>, <em>tol=1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.local.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve any linear system of equations using the proposed algorithm.</p>
+<p>Transform the input <cite>A</cite> and <cite>b</cite> using SLSE_transformation and compute the
+result using PPCGM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A</strong><span class="classifier">(M, N) matrix_like</span></dt><dd><p>Coefficient matrix to the linear system of equations</p>
+</dd>
+<dt><strong>b</strong><span class="classifier">(M,) matrix_like</span></dt><dd><p>Constant matrix to the linear system of equations</p>
+</dd>
+<dt><strong>tol</strong><span class="classifier">float, optional</span></dt><dd><p>The stopping threshold for PPCGM (default is <cite>1e-5</cite>)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">(N,) array_like</span></dt><dd><p>The solution to the linear system computed by PPCGM</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="dask">
+<h3>Dask<a class="headerlink" href="#dask" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="secout.LSE.DaskLSE">
+<em class="property">class </em><code class="descclassname">secout.LSE.</code><code class="descname">DaskLSE</code><span class="sig-paren">(</span><em>A</em>, <em>b</em>, <em>l=16</em>, <em>p=6</em>, <em>q=3</em>, <em>remote=None</em>, <em>local=None</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.DaskLSE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Secure solver for linear system of equation.</p>
+<p>Solves the specified linear system of equation by exploiting local and remote
+computational resources using the proposed algorithms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A: (M, N) array_like</strong></dt><dd><p>The coefficient matrix of the linear system to be solved</p>
+</dd>
+<dt><strong>b: (M,) matrix_like</strong></dt><dd><p>The constant matrix of the linear system to be solved</p>
+</dd>
+<dt><strong>l: int, optional</strong></dt><dd><p>Parameter for additive noise, assuming that the value of A is within
+(-2^l, 2^l) (the default is 16)</p>
+</dd>
+<dt><strong>p: int, optional</strong></dt><dd><p>parameter for additive noise (the default is 8).</p>
+</dd>
+<dt><strong>q: int, optional</strong></dt><dd><p>parameter for additive noise (the default is 4).</p>
+</dd>
+<dt><strong>remote: dask.distributed.Client</strong></dt><dd><p>The client instance represents remote resources</p>
+</dd>
+<dt><strong>local: dask.distributed.Client</strong></dt><dd><p>The client instance represents local resources</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dask.distributed.Client</span></code></dt><dd></dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Ap</strong><span class="classifier">(N, N) array_like</span></dt><dd><p>Transformed coefficient matrix</p>
+</dd>
+<dt><strong>bp</strong><span class="classifier">(N, ) array_like</span></dt><dd><p>Transformed constant matrix</p>
+</dd>
+<dt><strong>x</strong><span class="classifier">(N,) array_like</span></dt><dd><p>Solution for the input problem</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-center">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#secout.LSE.DaskLSE.denormalize_problem" title="secout.LSE.DaskLSE.denormalize_problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">denormalize_problem</span></code></a>(self)</p></td>
+<td><p>Recover coefficient <cite>A</cite> and constant <cite>b</cite>  to de-normalized form</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#secout.LSE.DaskLSE.normalize_problem" title="secout.LSE.DaskLSE.normalize_problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize_problem</span></code></a>(self)</p></td>
+<td><p>Normalize the coefficient matrix <cite>A</cite> and constant matrix <cite>b</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#secout.LSE.DaskLSE.ppcgm" title="secout.LSE.DaskLSE.ppcgm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ppcgm</span></code></a>(self[, tol])</p></td>
+<td><p>Performs Privacy Preserving Conjugate Gradient Method (PPCGM).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#secout.LSE.DaskLSE.secure_mask" title="secout.LSE.DaskLSE.secure_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">secure_mask</span></code></a>(self, A[, Q, P, Z])</p></td>
+<td><p>Perform secure masking <cite>Q &#64; (A + Z) &#64; P</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#secout.LSE.DaskLSE.slse_transformation" title="secout.LSE.DaskLSE.slse_transformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slse_transformation</span></code></a>(self)</p></td>
+<td><p>Performs SLSE transformations to the given problem.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#secout.LSE.DaskLSE.solve" title="secout.LSE.DaskLSE.solve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">solve</span></code></a>(self[, tol])</p></td>
+<td><p>Solve any linear system of equations using the proposed algorithm.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="secout.LSE.DaskLSE.denormalize_problem">
+<code class="descname">denormalize_problem</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.DaskLSE.denormalize_problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recover coefficient <cite>A</cite> and constant <cite>b</cite>  to de-normalized form</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="secout.LSE.DaskLSE.normalize_problem">
+<code class="descname">normalize_problem</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.DaskLSE.normalize_problem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the coefficient matrix <cite>A</cite> and constant matrix <cite>b</cite></p>
+<p>The normalization is based on the upper and lower bound of A.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="secout.LSE.DaskLSE.ppcgm">
+<code class="descname">ppcgm</code><span class="sig-paren">(</span><em>self</em>, <em>tol=1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.DaskLSE.ppcgm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs Privacy Preserving Conjugate Gradient Method (PPCGM).</p>
+<p>The result is saved as a instance attribute <cite>x</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tol: float, optional</strong></dt><dd><p>The stopping threshold for PPCGM (default is <cite>1e-5</cite>)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="secout.LSE.DaskLSE.secure_mask">
+<code class="descname">secure_mask</code><span class="sig-paren">(</span><em>self</em>, <em>A</em>, <em>Q=None</em>, <em>P=None</em>, <em>Z=None</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.DaskLSE.secure_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform secure masking <cite>Q &#64; (A + Z) &#64; P</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A: (M, N) array_like</strong></dt><dd><p>The array to be masked</p>
+</dd>
+<dt><strong>Q: (M, M) array_like, optional</strong></dt><dd><p>Row permutation matrix. If Q is not supplied, a random permutation
+matrix of corresponding shape is generated.</p>
+</dd>
+<dt><strong>P: (N, N) array_like, optional</strong></dt><dd><p>Column permutation matrix. If P is not supplied, a random permutation
+matrix of corresponding shape is generated.</p>
+</dd>
+<dt><strong>Z: (M, N) array_like, optional</strong></dt><dd><p>Additive noise matrix. If Z is not supplied, a random additive
+noise of <code class="docutils literal notranslate"><span class="pre">A.shape</span></code> is generated</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>(M, N) array_like</dt><dd><p>The result of the secure mask <code class="docutils literal notranslate"><span class="pre">Q</span> <span class="pre">&#64;</span> <span class="pre">(A</span> <span class="pre">+</span> <span class="pre">Z)</span> <span class="pre">&#64;</span> <span class="pre">P</span></code></p>
+</dd>
+<dt>Z: (M, N) array_like</dt><dd><p>Additive noise</p>
+</dd>
+<dt>Q: (M, M) array_like</dt><dd><p>Row permutation matrix</p>
+</dd>
+<dt>P: (N, N) array_like</dt><dd><p>Column permutation matrix</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="secout.LSE.DaskLSE.slse_transformation">
+<code class="descname">slse_transformation</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.DaskLSE.slse_transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs SLSE transformations to the given problem.</p>
+<p>Computes <span class="math notranslate nohighlight">\(A.T A\)</span> and <span class="math notranslate nohighlight">\(A.T b\)</span> using the proposed secure LSE
+transformation. The results are saved as instance attributes <cite>Ap</cite> and
+<cite>bp</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="secout.LSE.DaskLSE.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>self</em>, <em>tol=1e-05</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.LSE.DaskLSE.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve any linear system of equations using the proposed algorithm.</p>
+<p>Transform the input <cite>A</cite> and <cite>b</cite> using SLSE_transformation and compute
+the result using PPCGM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tol: float, optional</strong></dt><dd><p>The stopping threshold for PPCGM (default is <cite>1e-5</cite>)</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>None</dt><dd></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="quadratic-programming">
+<h2>Quadratic Programming<a class="headerlink" href="#quadratic-programming" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Dask<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>This module contains</p>
+<dl class="class">
+<dt id="secout.QP.DaskQP">
+<em class="property">class </em><code class="descclassname">secout.QP.</code><code class="descname">DaskQP</code><span class="sig-paren">(</span><em>Q</em>, <em>b</em>, <em>A</em>, <em>c</em>, <em>remote=None</em>, <em>local=None</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.QP.DaskQP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Secure Quadratic Programming solver</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dask.distributed.Client</span></code></dt><dd></dd>
+</dl>
+</div>
+<p class="rubric">Methods</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 67%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>dual_formulation</strong></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><strong>secure_mask</strong></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="secout.QP.DaskQP.dual_formulation">
+<code class="descname">dual_formulation</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.QP.DaskQP.dual_formulation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="secout.QP.DaskQP.secure_mask">
+<code class="descname">secure_mask</code><span class="sig-paren">(</span><em>self</em>, <em>H</em>, <em>V=None</em>, <em>T=None</em><span class="sig-paren">)</span><a class="headerlink" href="#secout.QP.DaskQP.secure_mask" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/secout_icon.png" alt="Logo"/>
+            </a></p>
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">API</a><ul>
+<li><a class="reference internal" href="#linear-system-of-equations">Linear System of Equations</a><ul>
+<li><a class="reference internal" href="#local">Local</a></li>
+<li><a class="reference internal" href="#dask">Dask</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quadratic-programming">Quadratic Programming</a><ul>
+<li><a class="reference internal" href="#id1">Dask</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="index.html">Overview</a>
+    <ul>
+          <li>Previous: <a href="setup.html" title="previous chapter">Setup</a>
+          
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Yida Liu.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  <script type="text/javascript" src="_static/version_warning_offset.js"></script>
+
+  </body>
+</html>

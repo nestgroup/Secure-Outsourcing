@@ -6,7 +6,7 @@ You can install Secout with ``pip``, or by installing from source.
 Install using pip
 -----------------
 
-You could always download the newest release on the project `release page <https://drive.google.com/drive/folders/1h0dTA8x11DloK9Hq7QWTsP0VQQxhZLgj?usp=sharing>`_
+You could always download the newest release on the project `release page <https://github.com/nestgroup/Secure-Outsourcing/releases>`_
 
 Once you downloaded the binary release file, use the following command to install Secout
 
